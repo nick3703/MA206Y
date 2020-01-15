@@ -1,0 +1,129 @@
+---
+title: "Lsn 23 - MA206Y"
+author: "Clark"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,fig.width=6, fig.height=4, warning = FALSE)
+```
+## Admin
+
+
+Previously we have been fitting linear regression models:
+
+\vspace{.5in}
+
+Recall here we are interested in determining if there is a linear relationship between $x_i$ and $y_i$.  
+
+For instance, we might be interested in explaining the relationship between square footage and price of a house.
+
+The model here is:
+
+\vspace{.5in}
+
+Our hypothesis that we are testing is:
+
+\vspace{.5in}
+
+We fit this doing:
+
+```{r}
+house.dat=read.table("http://www.isi-stats.com/isi2/data/housing.txt",header=T)
+
+sq.lm=lm(price.1000~sqft,data=house.dat)
+summary(sq.lm)
+```
+
+So what does this mean?
+
+\vspace{1.in}
+
+Recall that we had assumptions to check.
+
+```{r}
+sq.lm %>% ggplot(aes(x=.fitted,y=.resid,color=house.dat$lake))+geom_point()
+```
+
+What do we see here?
+
+\vspace{1.in}
+
+Here it might be more appropriate to build a multiple regression model.  THe model is:
+
+\vspace{.5in}
+
+Now, the most important part of understanding this model is that the effects are \textbf{conditional}.  Meaning, what we are testing is, \textbf{If we have a model for square footage and price does lake front have a relationship with price}.  Also, \textbf{If we have a model for lake front and price, does square footage have a relationship with price}.  Our residual plot suggests that this is true.
+
+Our $H_0$ and $H_a$ are now:
+
+\vspace{.5in}
+
+We can fit this with:
+
+```{r}
+full.lm=lm(price.1000~sqft+lake,data=house.dat)
+summary(full.lm)
+```
+
+Our fitted model is then:
+
+\vspace{1.in}
+
+
+Our conclusion is:
+
+\vspace{1.in}
+
+This whole business of conditional might not seem important, but sometimes it is.  One thing we note is that the impact of square footage on price depends on whether lakefront is in our model or not.  If we are just looking at square footage we would say that an increase in 1 sqft adds .21274 price.  However, when we add lakefront to the model, we see that an increase in 1 sq ft adds .1481 price to the model.  Why is this?  Well, it's a bit tricky, but if we look at squarefootage and lakefront we see:
+
+```{r}
+house.dat %>% group_by(lake)%>%
+  summarize(mu.sqft=mean(sqft),mu.price=mean(price.1000))
+```
+
+So houses on the lakefront are \textit{also bigger houses}.  So, here we have potential confounding.  Recall that confounding is:
+
+\vspace{1.in}
+
+Our diagram is:
+
+\vspace{1.in}
+
+So when we don't have lakefront in our model, we attribute an effect due to square footage that is \textit{actually due to lakefront!}
+
+What we want then is the conditional effect.
+
+To visualize the fitted model we can do:
+
+```{r,warning=FALSE}
+library(broom) #Need to install this library
+full.lm2=augment(full.lm)
+full.lm2 %>% ggplot(aes(x=sqft,y=price.1000,color=lake))+
+  geom_point()+
+  geom_line(aes(y=.fitted,color=lake))
+```
+
+Note we still have to check our assumptions about $\epsilon_i$.  Recall that these are LINE
+
+\vspace{.5in}
+
+```{r}
+full.lm2%>%ggplot(aes(x=.fitted,y=.resid))+geom_point()+
+  geom_hline(yintercept=0)
+```
+
+```{r}
+full.lm2 %>% ggplot(aes(x=.resid))+geom_histogram()
+```
+
+Now, using what we've learned. Write out, using the language of statistics, \textit{your} multiple regression model for your project:
+
+\vspace{1.in}
+
+If you have the data start exploring your data.  What plots might you want to use?  What data might you want to show?  Think about the relationships that might exist.  Here's one visualization.  Some of these are helpful, some are not.
+
+```{r,warning=FALSE}
+library(GGally)
+ggpairs(house.dat)
+```

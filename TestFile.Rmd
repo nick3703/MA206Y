@@ -1,0 +1,21 @@
+---
+title: "SIL 5"
+author: "Clark and Partner"
+date: "November 7, 2019"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Problem 1
+
+If I want to insert an equation, $y_i=\beta_0+\beta_1x_i+\epsilon_i$
+
+
+```{r}
+
+x=rnorm(1000)
+hist(x)
+```

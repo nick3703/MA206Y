@@ -1,0 +1,118 @@
+---
+title: "Lsn 15 - MA206Y"
+author: "Clark"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,fig.show = 'hide')
+```
+
+##Admin
+
+The folks at MythBusters investigated whether yawning is contageous.  Fifty people attending a local flea market were recuited to participate.  Subjects were ushered, one at a time, into one of thre rooms by co-host Kari.  She yawned as she ushered subjects into two of the rooms, and for the other room she did not yawn.  The researchers decided in advance, with a random mechanism, which subjects went to which room.  As time passed, the researchers watched to see which subjects yawned.
+
+What was the point of having two groups here?
+
+\vspace{.5in}
+
+Is this an observational study or a randomized experiment?  How are you deciding?
+
+\vspace{.5in}
+
+Identify the explanatory and response variables in this study. Classify them as categorical or quantitative.
+
+\vspace{.5in}
+
+In words, what is our null  hypothesis and which is our alternative.  \textbf{The null hypothesis is typically a statement of no effect}.  State the null and alternative hypothesis in terms of association between the explanatory and response variables in this study
+
+\vspace{.3in}
+
+There are two long-run probabilities (parameters) in this study.  What are they?
+
+\vspace{.3in}
+
+Write the null and alternative hypothesis in terms of the two long-run probabilities using appropriate symbols.
+
+\vspace{.4in}
+
+The researchers found that 11 of 34 subjects who had been given a yawn seed actually yawned themselves, comapred with 3 of 16 who  had not been given a yawn seed.  A table:
+
+\vspace{1.in}
+
+Proportion who yawned in "yawn seed group":
+
+Proportion who yawned in control group:
+
+Difference in conditional proportions:
+
+This is your \textbf{statistic}: $\hat{p}_1 - \hat{p}_2$
+
+```{r}
+yawn.dat=read.table("http://www.isi-stats.com/isi/data/chap5/Yawning.txt",header=T)
+yawn.dat %>% group_by(YawnSeed,Response)%>%summarize(count=n())
+```
+
+The key to our simulation analysis is to assume that if yawning is NOT contageious, then the 14 yawners would have yawned regardless of whether or not theyhad seen the yawn seed.
+
+Card experiment
+
+In our simulation what was the proportion who yawned in the treatment group?
+
+What was the proportion who yawned in the control group?
+
+Let's go to the applet
+
+Simulate 1000 shuffles.  Is the null distribution for the difference in proportions centered at zero?  Explan
+
+\vspace{.5in}
+
+Is the observed value out in the tail of the null distribution?
+
+
+\vspace{.5in}
+
+Let's calculate a P-value.  What's our conclusion?
+
+\vspace{.5in}
+
+What we just went through was a hypothesis test for two sample proportion.  As opposed to what we previously had been dong, we now have two groups that we are comparing.  Our groups are defined by our explanatory variable and we are examining whether the explanatory variable impacts the response variable.
+
+Here our parameter is:
+
+\vspace{.5in}
+
+Our null and alternative hypothesis are something of the form:
+
+\vspace{.5in}
+
+To estimate our parameter we will use a statistic, in this case we use:
+
+\vspace{.5in}
+
+We can simulate the distribution of the statistic under $H_0$ using the two proportion applet, or we can use a theory based test.  
+
+Though this is beyond the scope of the course, there's actually an exact way to calculate this.  R.A. Fisher, the father of modern statistics, came up with a way to count all the possible simulations.  He had to do this since computers weren't invented.  But the original story was a lady claimed to be able to tell whether the tea or the milk was added first to a cup.  Fisher proposed giving her eight cups of team, four of each variety, in random order.  He then found the exact probability that she was guessing.  Based off this, there is a test called Fisher's exact test:
+
+```{r}
+Yawns<-
+matrix(c(11, 3, 23, 13),
+       nrow = 2)
+fisher.test(Yawns, alternative = "greater")
+```
+
+The key point here is that in 1935, Fisher \textbf{wanted} to be able to do a simulation and couldn't, so we had to use counting techniques.  We now can, if we desire, simulate.
+
+However, as we can see in our plot, we do have hope for a theory based test.  What does the $\hat{p}_1-\hat{p}_2$ curve look like?
+
+\vspace{.5in}
+
+Is this surprising?
+
+\newpage
+
+Let's work 5.1.8-5.1.11  
+
+\vspace{1.5in}
+
+5.2.2

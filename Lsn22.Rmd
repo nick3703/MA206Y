@@ -1,0 +1,186 @@
+---
+title: "Lsn 22 - MA206Y"
+author: "Clark"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,fig.width=6, fig.height=4, warning = FALSE)
+```
+## Admin
+
+Recall that the model we are fitting is:
+
+\vspace{1.in}
+
+Note that this is the \textbf{fitted model}.  More correctly, the linear regression model is given by:
+
+\vspace{1.5in}
+
+What role does $\epsilon_i$ play here?
+
+\vspace{.5in}
+
+For instance, awhile ago we were exploring the relationship between home prices as square footage.
+
+```{r}
+GreenBay=read.csv("GreenBay.csv")
+GreenBay = GreenBay %>% mutate(Sqfeet=X..SQUARE.FEET,Price=log(PRICE))
+```
+
+If we look at the data:
+
+```{r, out.width='60%'}
+GreenBay %>% ggplot(aes(x=Sqfeet,y=Price))+geom_point()
+```
+
+Does there appear to be a linear relationship between Square Feet and log of price?  Though it may seem weird that I'm using log of price here, I'll circle back to this at the end of the lesson.
+
+\vspace{.5in}
+
+What is our parameter we are interested in? \textbf{Note that our parameter comes from the unfit model}
+
+\vspace{.5in}
+
+What is $H_0$ and $H_a$?
+
+\vspace{.5in}
+
+The next step is to estimate our parameter, $\beta_1$.  This is done through finding the least squares estimates.  Here our parameters are estimated from:
+
+```{r}
+house.lm=lm(Price~Sqfeet,data=GreenBay)
+coef(house.lm)
+```
+
+In contest of our problem what does this mean?
+
+\vspace{.5in}
+
+Note that we could stop here and find the simulation based p values, or else we could rely on validity conditions.  An acronym that helps remember the validity conditions is \textbf{LINE}:
+
+\vspace{1.in}
+
+To check linearity and equal variance, we plot the \textbf{residuals} vs the predicted value.  The residuals are:
+
+\vspace{.5in}
+
+This can be done by:
+
+```{r, out.width='60%'}
+house.lm %>% ggplot(aes(x=.fitted,y=.resid))+geom_point()
+```
+
+What we generally want to see here is a cloud of points centered at zero.
+
+To check normality we can look at a histogram of the residuals
+
+```{r, out.width='60%'}
+house.lm%>%ggplot(aes(x=.resid))+geom_histogram()
+```
+
+Which we want to be generally bell shaped.
+
+Overall we're in pretty good shape here!  If our validity conditions are met, then we can use the standardized statistic:
+
+\vspace{.5in}
+
+Whch has a \textit{t distribution} with $n-2$ degrees of freedom.  To find a P value for this, we run:
+```{r}
+summary(house.lm)
+```
+
+Let's go through this line by line.
+
+Here our conclusion is that there is strong statistical evidence that there is a relationship between square footage and log of price for houses in Green Bay.
+
+Our \textbf{fitted model} is:
+
+\vspace{.5in}
+
+Let's go back to our data and see what would have happened if we hadn't taken the log of price.
+
+```{r}
+GreenBay=read.csv("GreenBay.csv")
+GreenBay = GreenBay %>% mutate(Sqfeet=X..SQUARE.FEET,Price=PRICE)
+```
+
+Which we plot:
+```{r,warning=FALSE, out.width='60%'}
+GreenBay %>% ggplot(aes(x=Sqfeet,y=Price))+geom_point()+
+  stat_smooth(method="lm",se=FALSE)
+```
+
+Why might this concern us?
+
+\vspace{.5in}
+
+We can see this even more by:
+
+```{r, out.width='60%'}
+house.lm=lm(Price~Sqfeet,data=GreenBay)
+house.lm %>% ggplot(aes(x=.fitted,y=.resid))+geom_point()
+```
+
+So here we can still get estimates of our parameter, but we cannot use a theory based method as the validity conditions are not met.
+
+To summarize:
+
+Model:
+
+\vspace{.5in}
+
+Parameter:
+
+\vspace{.5in}
+
+Validity Condtions:
+
+\vspace{.5in}
+
+Statistic:
+
+\vspace{.5in}
+
+
+Hypothesis:
+
+\vspace{.5in}
+
+Fitted model:
+
+\newpage
+
+Now you try one, let's consider textbook prices vs. number pages.  The data can be found at:
+
+```{r}
+textbook.dat=read.table("http://www.isi-stats.com/isi/data/chap10/TextbookPrices.txt",header=T)
+```
+
+First write out the population regression model.  Make sure you define $i$, $y_i$, and $x_i$.  Use Pages as your independent variable and Price as your dependent variable.
+
+\vspace{.5in}
+
+Looking at Page 10.5.15, Do parts a-c.  
+
+\vspace{1.5in}
+
+Note that the p value from `summary.lm` gives you the two sided P value.  Can you figure out the p value for the hypothesis in part b.?
+
+\vspace{.5in}
+
+Write out the fitted model
+
+\vspace{.5in}
+
+Interpret the slope coefficient in context of the problem
+
+\vspace{.5in}
+
+Confidence intervals can be found using `confint()` of your lm object.  For instance we could have done:
+
+```{r}
+confint(house.lm)
+```
+
+Use this to find a 95\% CI for the slope.  Interpret this CI.

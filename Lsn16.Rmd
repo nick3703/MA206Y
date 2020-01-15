@@ -1,0 +1,64 @@
+---
+title: "Lsn 16 - MA206Y"
+author: "Clark"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,fig.show = 'hide')
+```
+
+## Midterm Return and Discussion
+
+## Course Project
+
+## 5.2.2
+
+## Comparing 2 proportions - Theory based test
+
+Null Hypothesis:  The population proportion of boys born to smoking parents is the same as the population proportion of boys born to nonsmoking parents
+
+Alternative Hypothesis: The population proportion of boys born to smoking parents is different from the population proportion of boys born to nonsmoking parents
+
+\begin{align*}
+& H_0: \\
+& H_a:
+\end{align*}
+
+Our parameter of interest is:
+
+\vspace{.5in}
+
+One statistic we could use to estimate this paramter is:
+
+\vspace{.5in}
+
+Recall that we used the applet last class to examine the distribution of this statistic and we said if we squinted our eyes in sort of looked like a Normal Curve:
+
+\vspace{1.in}
+
+If our \textbf{validity conditions} are met, it turns out that we can use a standardized statistic:
+
+\vspace{1.in}
+
+And it has a Normal distribution.  Recall that our standardized statistic gives us a feel for how many standard deviations our observation is from the mean.
+
+From our smoking data we have:
+
+\vspace{1.in}
+
+So our z statistic is:
+
+\vspace{1.in}
+
+We can also find a Confidence Interval in a similar manner.  Note that all the calculations can be done in R using `prop.test()`
+
+
+```{r}
+prop.test(x = c(1975, 255), n = c(3602, 565), alternative = "two.sided", conf.level = 0.95, 
+    correct = F)
+```
+
+Let's go piece by piece through this code and the output.  Though it might look a bit intimidating, the thing to keep in mind is that the $\chi^2$ value given is $z^2$ found above.
+
+Let's work through 5.3.7

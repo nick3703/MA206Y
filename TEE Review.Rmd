@@ -1,0 +1,143 @@
+---
+title: "Course Review"
+author: "Clark"
+date: "12/9/2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Six Step Investigative Process
+
+### State the Research Question
+
+### Design a study and collect data
+
+### Explore the data
+
+### Draw inferences beyond the data
+
+### Formulate Conclusions
+
+### Look back and ahead
+
+
+First thing we do is define our variables.  Is our response variable categorical or continuous?
+
+The second thing to do is determine if we have one group, two groups, or a regression?  In other words, what is our explanatory variable.
+
+The difference situations we could be in, with appropriate parameters, are:
+
+
+\vspace{2.in}
+
+The next step is to explore the data and calculate our statistic.  Depending on our situation, the different statistics we could calculate are:
+
+
+\vspace{2.in}
+
+The next thing we want to do is to draw inferences beyond the data.  This involves testing a hypothesis.  Our hypothesis we might be testing are:
+
+
+\vspace{2.in}
+
+Next we want to calculate a P-value to determine the probability we would have observed something as extreme (or more) from statistic assuming $H_0$ is true.  We can either simulate from $H_0$ and compare our statistic to the values obtained, or we could use a theory based method.  The validity conditions depending on our situation are:
+
+\vspace{2.in}
+
+Next we want to formulate conclusionsHere we report a P-value as well as potentially a Confidence Interval.  Recall that a confidence interval is the range of plausable values.  We often say a 95\% CI gives us 95\% confidence that our parameter is contained within that interval.
+
+We also want to determine causality.  The best picture for this is Lesson 13 of the course guide.
+
+Finally we want to think about how we can improve/extend the study.
+
+## Some example problems
+
+\textit{A Pew Research survey of nationally representative 242 cell phone useres, ages 16 to 17 years, found that 126 had talked on the phone while driving.}
+
+Use these data to estimate with 95\% confidence, the proportion of all 16 to 17 year old cell phone useres who talk on the phone while driving
+
+
+Do these data provide evidence that a majority of 16 to 17 year old cell phone useres talk on the phone while driving?
+
+
+If we sampled more users would our 95\% CI increase or decrease in width?
+
+Are our validity conditions met to use a theory based test here?
+
+
+\textit{On average Americans have visited 16 states in the United States.  In a survey of 50 students, I found the average number of states the students had visited to be 9.48 and the standard deviation to be 7.13}
+
+What are the observational units for this study?
+
+Is the variable of interest categorical or quantitative?
+
+State the null and alternative hypothesis in symbols to test whether the average number of states all students visited is different then 16.
+
+What are our validity conditions to use a theory based method?
+
+Find a 95\% CI using the 2SD method.  From the CI can we determine if our $H_a$ is true or not?
+
+\textit{From a 2013 Gallup poll that asked randomly selected US adults whether they wanted to stay at their current body weight or change, of 562 men surveyed, 242 wanted to stay at their current weight, whereas of the 477 women surveyed, 172 wanted to stay at their current weight.}
+
+Define the parameters of interest of this study.  Assign appropriate symbols to the parameters
+
+State the appropriate null and alternative hypothesis if we are interested in determining if there's a difference between mena nd women
+
+Is it valid to use a theory-based approach?  Why or why not?
+
+What R command would you use in order to find the P-value?
+
+\textit{On the blackboard site there's a file called `candy.txt`.  Use this to answer the following questions.  Researchers were interested in whether Payday or Mounds candy bars weighed differently, so they randomly selected 20 of each variety and weighed them.  }
+
+What are the explanatory variables and what are the response variables for this study?
+
+Write down the null and alternative hypothesis (in symbols) to determine if the candy bars weighed different?
+
+Are your validity conditions met to use a theory based test?
+
+Use a theory based test to find a p-value and answer the researchers question
+
+\textit{A team of reserachers investigated whether hours slept or gender impacted a students GPA}
+
+
+What are the observational/experimental units?
+
+The data are located at the blackboard site in a file called `sleep.csv`.  
+
+```{r}
+sleep.dat<-read.csv("sleep.csv")
+sleep.lm<-lm(GPA~Sex+Sleep_hours,data=sleep.dat)
+summary(sleep.lm)
+```
+
+Write out the fitted least squares regression model.
+
+
+What does it mean that `Sleep_hours` has a P value of 0.00541?
+
+
+What is the difference in Males and Females GPA for two students who sleep the same amount?
+
+What does it mean that `Sleep_hours` has a coefficient of 0.08413?
+
+
+Next the model
+
+
+```{r}
+sleep2.lm<-lm(GPA~Sex+Sleep_hours+Sex:Sleep_hours,data=sleep.dat)
+summary(sleep2.lm)
+```
+
+Is fit.
+
+
+What would it mean if there was an interaction effect between Sex and Sleep_hours?
+
+Do the data suggest that there is an interaction effect?
+
+
+Does this model do a good job explaning the data?  Why or why not?

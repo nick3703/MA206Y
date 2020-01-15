@@ -1,0 +1,163 @@
+---
+title: "Lsn 21 - MA206Y"
+author: "Clark"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,fig.width=6, fig.height=4)
+```
+## Admin
+
+Recall that last lesson we were interested in testing:
+
+\vspace{1.in}
+
+One statistic we could use to test this set of hypothesis is the sample correlation coefficient, $r$. While $r$ tells us how strongly two quantiatiave variables are related, it doesn't give us a feel for what exactly we should expect to happen to $y$ when we change our $X$ values.  Remember from 7th grade, the equation of a line is $y=mx+b$.  We know that $b$ is the y intercept and $m$ is the slope, but what exactly is a slope?  Let's consider two situations, one where $x=3$ and one where $x=4$.  We can write out the fitted lines as:
+
+
+\vspace{.5in}
+
+So the difference in $y$ is $m$.  That is, the value of $m$ gives us the expected change in $y$ for one unit change in $x$.  Let's consider the study in our book.  Are dinner plates getting larger?  Why might we care about this question?
+
+\vspace{.5in}
+
+Here we can read in the data as:
+
+```{r}
+plate.dat=read.table("http://www.isi-stats.com/isi/data/chap10/PlateSize.txt",header=T)
+```
+
+We can explore the data:
+
+```{r}
+plate.dat %>% summarize(mean=mean(size),sd=sd(size))
+plate.dat %>% ggplot(aes(x=year,y=size))+geom_point()+
+  ylim(c(9,12)) #Note the ylim command here
+```
+
+It's kind of hard to tell if there's a relationship, but we can look at $r$
+
+```{r}
+cor(plate.dat$year,plate.dat$size)
+```
+Which would suggest a pretty strong relationship.  To fit a line in R we use the `lm()` function which computes the $m$ and $b$ values such that:
+
+\vspace{1.in}
+
+```{r}
+
+my.lm=lm(size~year,data=plate.dat)
+summary(my.lm)
+```
+
+Whew...  What is going on here...  The first thing to note is how we input equations into R.  R always assumes you have a Y intercept so the form `size~year` is fitting the equation:
+
+\vspace{.5in}
+
+To get the estimates we look at the values of `Estimate` in the table.  Note what we are doing here, we are not assuming that we KNOW the relationship, but we are using data to ESTIMATE the relationship.  Our book doesn't use $y=mx+b$ but rather uses $\hat{y}=a + b(x)$ as the fitted equation.  
+
+In terms of our problem a slope of $0.0128$ means:
+
+\vspace{.5in}
+
+So as year increases we can say that size also increases.
+
+What does it mean for an intercept to be equal to $-14.8$?
+
+\vspace{.5in}
+
+To add the regression line to our data we do:
+
+```{r}
+plate.dat %>% summarize(mean=mean(size),sd=sd(size))
+plate.dat %>% ggplot(aes(x=year,y=size))+geom_point()+
+  ylim(c(9,12)) +stat_smooth(method="lm",se=FALSE)
+```
+
+But how good is this fit?  Certainly it looks ok for some of the points (1975), but is it good for all of the points?  Where does it do the worst?
+
+\vspace{.5in}
+
+One way to quantify how good it is is to look at the residuals.  Our residuals are found from observed-predicted.  Here our residuals can be found from
+
+```{r}
+residuals=my.lm$residuals
+max(abs(residuals))
+```
+
+The maximum absolute residual then gives the point where my data fits the line the worst.
+
+In order to visualize we can look at the applet.
+
+Not what happens to the residuals as we move the regression line.
+
+The final statistic we can use is the $R^2$ statistic.  This statistic gives the proportion of variability in our data that is explained by our model.  
+
+That is, if we have an $R^2=1$ we have a perfectly linear fit, an $R^2=0$ means a no fit at all.
+
+If we go back and look at the `lm` output we see ``Multiple R-squared:`.  This is caluclated from teh formula given on page 541.  It's not a mistake that we have $r$ as correlation and $R^2$ as the name of another statistic.  In fact here, if we square our correlation coefficient we get `.603774^2=0.364543`
+
+Here we can say that the coefficient of determination is 36.45 \%.  This means that 36.45\% of the variation in plates is due to changes in year.  
+
+
+As we will discover, probably the best statistic to use is the coefficient for slope.  Let's look at this a bit more.  Recall that our equation we are fitting is:
+
+\vspace{.5in}
+
+If our slope is 0 what are we saying about the relationship between $X$ and $Y$?
+
+\vspace{.5in}
+
+Therefore, we can phrase our null and alternative hypothesis as:
+
+\vspace{1.in}
+
+Here to test this, we will use, as our test statistic, $b$
+
+Our realization of our test statistic (or calculated value) is found from minimizing the sums of squared error between:
+
+\vspace{1.in}
+
+Let's consider the our IOCT and APFT data again.  If we want to use our slope estimate as our test statistic we would calculate:
+
+```{r}
+apft.dat=read.csv("APFT.csv")
+my.lm=lm(IOCT_Time~APFT_Score,data=apft.dat)
+summary(my.lm)
+
+```
+
+Here we see that our estimate of $b$ is -.304.  But does this prove that our alternative hypothesis is true?
+
+\vspace{.5in}
+
+Using the applet, let's find the p value for the slope.
+
+What is our conclusion?
+
+Now let's try one on your own.  Let's look at Exploration 10.4
+
+Write the null and alternative hypothesis in words
+
+Using the data:
+```{r}
+hand.data=read.table("http://www.isi-stats.com/isi/data/chap10/Handwidth.txt",header=T)
+```
+
+Find the correlation between hand with and perceived weight.
+
+
+\vspace{.5in}
+
+Assuming you want to use slope as your test statistic, write out your null and alternative hypothesis.
+
+\vspace{.5in}
+
+Using R find the leas square estimates for both slope and y intercept.
+
+Paste the data from the website into the applet and simulate the distrubtion under $H_0$ and find your p value.
+
+\vspace{.5in}
+
+What is your conclusion?

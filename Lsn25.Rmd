@@ -1,0 +1,193 @@
+---
+title: "Lsn 25 - MA206Y"
+author: "Clark"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,fig.width=6, fig.height=4, warning = FALSE,fig.show="hide")
+library(tidyverse)
+```
+## Admin
+
+Recall that last class we were exploring the relationship between square footage and price of a house.
+
+The model here is:
+
+\vspace{.5in}
+
+Our hypothesis that we are testing is:
+
+\vspace{.5in}
+
+We fit this doing:
+
+```{r}
+house.dat=read.table("http://www.isi-stats.com/isi2/data/housing.txt",header=T)
+
+sq.lm=lm(price.1000~sqft+lake,data=house.dat)
+summary(sq.lm)
+```
+
+Let's write out the fitted model:
+
+\vspace{1.in}
+
+\vspace{1.in}
+
+Recall that we had assumptions to check.
+
+```{r}
+sq.lm %>% ggplot(aes(x=.fitted,y=.resid,color=house.dat$lake))+geom_point()
+```
+
+What do we see here?
+
+\vspace{1.in}
+
+Here it might be more appropriate to build a multiple regression model.  THe model is:
+
+\vspace{.5in}
+
+Now, the most important part of understanding this model is that the effects are \textbf{conditional}.  Meaning, what we are testing is, \textbf{If we have a model for square footage and price does lake front have a relationship with price}.  Also, \textbf{If we have a model for lake front and price, does square footage have a relationship with price}.  Our residual plot suggests that this is true.
+
+Our $H_0$ and $H_a$ are now:
+
+\vspace{.5in}
+
+We can fit this with:
+
+```{r}
+full.lm=lm(price.1000~sqft+lake,data=house.dat)
+summary(full.lm)
+```
+
+Our fitted model is then:
+
+\vspace{1.in}
+
+
+Remember that the fitted model assumes that we have two parallel lines that best explain our data.
+
+
+```{r,warning=FALSE}
+library(broom) #Need to install this library
+full.lm2=augment(full.lm)
+full.lm2 %>% ggplot(aes(x=sqft,y=price.1000,color=lake))+
+  geom_point()+
+  geom_line(aes(y=.fitted,color=lake))
+```
+
+We sort of hand waved this last class, but let's look at the fitted values vs the residuals
+\vspace{.5in}
+
+```{r}
+full.lm2%>%ggplot(aes(x=.fitted,y=.resid,color=lake))+geom_point()+
+  geom_hline(yintercept=0)
+```
+
+What strikes us as odd here?
+
+\vspace{.5in}
+
+For houses that are NOT on the lakefront, what happens to the residuals as the fitted values increase?
+
+\vspace{.5in}
+
+For houses that ARE on the lakefront, what happens to the residuals as the fitted values increase?
+
+\vspace{.5in}
+
+Going back to the picture of our fitted model from above, we can see this.  As we move up the red line our points are now over the red line.  As we move up the blue line our points are now below the blue line.
+
+Perhaps a better fit would be:
+
+```{r}
+house.dat = house.dat %>% group_by(lake)
+house.dat %>% ggplot(aes(x=sqft,y=price.1000,color=lake))+geom_point()+
+  stat_smooth(method="lm",se=FALSE,fullrange=T)
+```
+
+
+In order to account for this, we might consider adding \textbf{an interaction term}.  To do this we use the statistical model:
+
+\vspace{1.in}
+
+
+The presence of an interaction helps address the question, does square feet impact price differently depending on whether a house is on the lakefront or not?
+
+Our $H_0$ is, square feet impacts price the same whether the house is on the lakefront or not, the $H_a$ is square feet impacts price differently depending on whether the house is on the lakefront or not.
+
+The statistic that answers this question is $\hat{\beta}_3$ from our model above.  In symbols our $H_0$ and $H_a$ are:
+
+\vspace{1.in}
+
+To fit this model in R we fit:
+```{r}
+inter.lm<-lm(price.1000~sqft+lake+sqft:lake,data=house.dat)
+summary(inter.lm)
+```
+
+
+Our interpretation is:
+
+\vspace{1.in}
+
+The most difficult thing about writing out the fitted model is deciding what to do with `sqft:lakenotlakefront`.  To see what this value means, let's write out the fitted model for a house on the lakefront.
+
+\vspace{.5in}
+
+Now write out the fitted model for a house not on the lakefront.
+
+\vspace{.5in}
+
+What does it mean that `lakenotlakefront` has a P value of 0.76 here?  Does this mean that there is no difference between the price of houses on the lakefront and houses not on the lakefront?
+
+\vspace{1.in}
+
+Let's check our residuals now:
+
+
+```{r}
+inter.lm2=augment(inter.lm)
+inter.lm2 %>%ggplot(aes(x=.fitted,y=.resid,color=lake))+geom_point()+
+  geom_hline(yintercept=0)
+```
+
+Now we see much less of a pattern to our residuals.
+
+```{r}
+APFT=read.csv("APFT.csv")
+```
+
+Let's build a model for weight and APFT_Score
+
+```{r}
+APFT.lm=lm(APFT_Score~weight,data=APFT)
+```
+
+Write out the fitted model and interpret your results.
+
+\vspace{1.in}
+
+Let's look at the residuals
+
+```{r}
+APFT.lm2=augment(APFT.lm)
+APFT.lm2 %>%ggplot(aes(x=.fitted,y=.resid,color=APFT$CS))+geom_point()+
+  geom_hline(yintercept=0)
+```
+
+Here we've colored by Corps Squad status.  It sort of looks like the residuals for Corps Squad are higher than not Corps Squad.  Perhaps this is an important explanatory variable.  Write out a model for weight and Corps Squad
+
+\vspace{1.in}
+
+Fit the model and write out the fitted model for Corps Squaders and not Corps Squaders
+
+\vspace{1.in}
+
+Perhaps whether someone is Corps Squad impacts how weight effects APFT score.  Write out a model that tests this hypothesis
+
+\vspace{1.in}
+
+Fit the model and check the assumptions.

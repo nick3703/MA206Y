@@ -1,0 +1,142 @@
+---
+title: "Lsn 13 - MA206Y"
+author: "Clark"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,fig.show = 'hide')
+```
+
+##Admin
+
+
+In 1979 there was a study conducted on the effect of cigarette smoking on the amount of air an individual can exhale in the first second of a foreceful breath.
+
+The data collected were age, fev, heigh, sex, and smoke.
+
+According to the research question, what would you consider the explanatory variable and what would you consider the response variable?
+
+\vspace{1.in}
+
+What are our observational units?
+
+\vspace{1.in}
+
+Is our response variable continuous or categorical?
+
+\vspace{.5in}
+
+```{r,warning=FALSE}
+#install.packages("isdals")
+library(isdals)
+library(tidyverse)
+data(fev) #Another way to call in data is to use data that are tied to a library
+fev %>% ggplot(aes(x=FEV))+geom_histogram()
+```
+
+Our data are coded $0$ if not smoke, $1$ if smoke.  We run the code:
+
+```{r}
+fev %>% group_by(Smoke)%>%summarize(mean.FEV=mean(FEV))
+```
+
+What is the $\bar{X}_{\mbox{Smoker}}$ and what is $\bar{X}_{\mbox{Non Smoker}}$?
+
+\vspace{.5in}
+
+Is this surprising?
+
+\vspace{.5in}
+
+Let's draw our structure or causal diagram:
+
+\vspace{1.in}
+
+Can we conclude that smoking causes a higher FEV?  Why or why not?
+
+\vspace{.5in}
+
+What could be a confounding variable here?
+
+\vspace{.5in}
+
+Let's draw another causal diagram:
+
+\vspace{1.in}
+
+```{r}
+fev %>% ggplot(aes(x=jitter(Age),y=FEV,color=as.factor(Smoke),cex=1.5))+geom_point()
+```
+
+What do we see here?  How is this potentially evidence of confounding?
+
+
+\vspace{.5in}
+
+```{r}
+fev %>% group_by(Smoke)%>%summarize(mean.Age=mean(Age))
+
+```
+Is this an experiment or an observational study?
+
+\vspace{.5in}
+
+How would we make this an experiment?  Is this ethical?
+
+\vspace{.5in}
+
+It's very difficult (though not impossible) to draw cause and effect relationships in observational studies.  In an observational study, the values of the explanatory variable are simply observed.  Here our explanatory variable was smoking.  In an experiment, we get ot assign the conditions to the different subjects.  
+
+An area of research in biomechanics and gerontology concerns falls and fall-related injuries, especially for elderly peple.  Recent studies have focused on how individuals respond to large postural disturbances.  One question is whether subjects can be instructed to improve their recovery from such disturbances.  Suppose researchers want to compare two such recovery strategies, lowering and elevating.  Subjects will have first been trained on one of these two recovery strategies, and they will be asked to apply it after they feel themselves tripping.  The researchers will then induce the subject to trip while walking using a concealed mechanical obstacal.  Suppose we have 24 subjects, 8 females and 16 males.
+
+One way to design this study would be to assign the 8 females to use the elevating strategy and the 16 males to use the lowering strategy.  Is this a reasonable experiment?
+
+\vspace{.5in}
+
+Another way is to assign 4 females and 8 males to each group.  Clearly the proportions are the same, but what are we trying to achieve by using this strategy?
+
+\vspace{.5in}
+
+Now, if you see a difference in the proporiton of trips between the two groups, could it be because of the sex of the subject?  Could it be due to other variables distinct from the recovery strategy?
+
+\vspace{.5in}
+
+How else could we conduct the study?
+
+\vspace{.5in}
+
+Let's say we decide to use a completely randomized design (CRD).  Let's go to the Randomizing Subjects applet (www.rossmanchance.com/ISIapplets.html).  Do the randomization and look at the proportion of males and females in each group are we completely balanced between Males and Females?  Click randomize again, what happens?  
+
+\vspace{.5in}
+
+Let's randomize 1000 times (turn of animate).  On \textit{average} what can we say about the difference in sample proportions?
+
+\vspace{.5in}
+
+Do CRDs always balance possible confounding variables?  Is there a tendency for there to be a similar proportion of men in the two groups?
+
+\vspace{.5in}
+
+Instead we choose to employ a randomized block design (RBD).  Click on the randomized block.  Now observe the sex proportion.  Are we always balanced?
+
+\vspace{.5in}
+
+As it turns out, height also might be a confounder.  Under the CRD design are we, on average, balanced with respect to height?  What about under the RBD design?  On average is the RBD or the CRD more variable with respect to the differnce in height?
+
+\vspace{.5in}
+
+Is this surprising?
+
+\vspace{.5in}
+
+What if there's some gene some folks have.  On average using the CRD are we balanced with respect to that gene?  What about the RBD?  What we should find is that blocking by gender helps to control for confounders that we are blocking on and other confounders that are associated with gender, but does little to help control for other confounders that might be present.  We can never eliminate all variability in our model, what we can hope to do is distribute our unexplained variability (on average) equally across all of our treatment groups.
+
+### Chart on pg 244
+
+
+## Midterm Review
+
+
+
+

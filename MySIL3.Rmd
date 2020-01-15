@@ -1,0 +1,30 @@
+---
+title: "SIL3"
+author: "Clark"
+date: "September 30, 2019"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+setwd("C:/Users/nicholas.clark/Desktop/MA206Y")
+library(tidyverse)
+SIL3Data=read.csv("SIL_3_Data.csv")
+```
+
+## Problem 1
+
+I can type in my answer to problem 1
+
+```{r}
+SIL3Data %>%ggplot(aes(WEIGHT_W35))+geom_histogram()
+```
+
+$\pi_{\mbox{Democrat}}$
+
+
+
+

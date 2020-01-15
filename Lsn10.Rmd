@@ -1,0 +1,167 @@
+---
+title: "Lsn 10 - MA206Y"
+author: "Clark"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,fig.show = 'hide')
+```
+
+##Admin
+
+##Effect Estimation
+
+Recall that $\pi$ and $\mu$ are called:
+
+\vspace{.5in}
+
+And the goal of statistics is to find something out about these values. The only way we will truly know $\pi$ or $\mu$ is if we sample:
+
+\vspace{.4in}
+
+This is often unrealistic, so we do an experiment and observe $\hat{p}$ or $\bar{X}$.  Do you think that $\hat{p}=\mu$?  Will this ever be true?
+
+\vspace{.5in}
+
+
+
+DPE is interested in the percentage of Male cadets that pass the IOCT.  
+```{r,warning=FALSE,message=FALSE}
+library(tidyverse)
+apft<-read.csv("APFT.csv")
+males.explore<-apft %>% filter(sex=="M") %>% mutate(pass=IOCT_Time<211)%>%
+  group_by(pass)%>%summarise(count=n())
+males.explore
+```
+
+What is $\hat{p}$ here?  What is $n$?
+
+\vspace{.4in}
+
+Does this give us $\pi$?  What if we wanted to prove that $\pi \neq 0.05$?  What would $H_0$ and $H_a$ be?  
+
+\vspace{.5in}
+
+Using a simulation based method we could do:
+
+```{r}
+phat=31/(249+31)
+pi=0.05
+trials=280
+M=1000
+outcomes=2
+stats=data.frame(trial=seq(1,M),result=NA)
+for(i in 1:M){
+  simulation=rbinom(trials,outcomes-1,pi)
+  stats[i,]$result=sum(simulation)/trials
+}
+
+p.value=stats %>% filter(result>phat|result < pi-(phat-pi))%>%summarise(pval=n()/M)
+p.value
+```
+
+What would our conclusion be if we were willing to risk $\alpha=.05$?
+
+
+What if we were testing $\pi=0.09$?
+
+\vspace{.5in}
+
+So there's a tipping point where we would switch from rejecting to not rejecting.  Let's go to the applet and see if we can't find that point.  Let's include the $\pi$ we are testing and the proportion of 'as extreme or more extreme' observations:
+
+\vspace{1.5in}
+
+So we're fairly certain that $\pi$ cannot be:
+
+\vspace{.5in}
+
+Note we haven't proven what $\pi$ is, but we've given a range of values that we are fairly confident that our true proportion of Cadet males who fail the IOCT is.
+
+This is a \textbf{Confidence Interval}.  In particular this would be considered a 95\% confidence interval.  What if we were only willing to consider $\alpha=0.01$?  According to our table what would our tipping points be?  
+
+\vspace{.5in}
+
+There's a couple of interpretations of Confidence intervals that are generally accepted to be true.  The first is 'we are XXX percent confident that $\pi$ lies between ZZZ and YYY`.  This is ok.  Another interpretation is if we repeated our experiment over and over and over again, about XXX percent of the time $\pi$ would fall between ZZZ and YYY.  This, in my opinion, is a bit better of an interpretation, but they both are fine for this course.  What is NOT fine is:  XXX percent of our data lies between ZZZ and YYY.  Or, there is a XXX probability that $\pi$ is between ZZZ and YYY.
+
+Just like for hypothesis testing there is a theory based approach for finding confidence intervals.  Note that our validity condition is the exact same as before.  Which are:
+
+
+\vspace{.5in}
+
+If these are met, then we know:
+
+
+\vspace{.5in}
+
+For a confidence interval, though, we have to change one small thing.  In particular we aren't testing a hypothesis for a single $\pi_0$ so we need something else in the denominator.  For forming a CI we use:
+
+$$ z=\frac{\hat{p}-\pi}{\sqrt{\hat{p}(1-\hat{p})/n}}$$
+
+This leads to the following formula for a $100(1-\alpha)$ confidence interval:
+
+$$\hat{p}\pm z_{1-\alpha/2}\sqrt{\hat{p}(1-\hat{p})/n}$$ 
+
+Our book refers to $z_{1-\alpha/2}$ as the multiplier.  What I'm saying here is:
+
+\vspace{1.in}
+
+So to find a 95\% CI we would need the spot on our X axis so that the area under the curve is 1-.05/2=.975.  Or
+
+```{r}
+qnorm(.975)
+```
+
+For a 99\% CI we would need 1-.01/2=.995
+
+```{r}
+qnorm(.995)
+```
+
+So, four our IOCT data, using $z_{1-\alpha/2}=1.96$ or $\alpha=.05$ find a 95 \% CI 
+
+\vspace{1.in}
+
+
+We can get the same thing in R by using `prop.test`
+
+```{r}
+prop.test(x=31,n=(249+31),alternative="two.sided",conf.level=0.95,correct=F)
+```
+
+What would we have to change for a 99\% CI?  What about a 90\% CI?
+
+\vspace{.5in}
+
+
+The Gallup organizaiton conducted a survey with a random sample of 1,019 adult Americans on Decmeber 10-12, 2010.  They found that 80 \% of the respondents agreed with the statement that the US has a unique character that makes it the greatest country in the world.
+
+In words, what is the population and what is the sample?
+
+\vspace{.5in}
+
+Is $\pi=0.8$ where $pi$ is the proportion of Americans who agree with the statement?
+
+\vspace{.3in}
+
+Is it plausible that $\pi=0.775$?  Use the applet to explore this.  Click on Summary stats.  How many standard deviation is 0.775 from 0.80?
+
+\vspace{.5in}
+
+Note that `qnorm(.975)` yields a value of about 2, so a quick and dirty way to find a 95\% CI is to take $hat{p}\pm 2 sd(\hat{p})$  Using the SD you found in the simulation, do this.
+
+\vspace{.5in}
+
+Interpret this CI
+
+\vspace{.5in}
+
+Can we use a theory based method here?  Why or why not?
+
+\vspace{.3in}
+
+Accourding to the theory based method $sd(\hat{p})=\sqrt{\hat{p}(1-\hat{p})/n}$  What is this value and how does it compare to your simulations?
+
+\vspace{.3in}
+
+Use the theory based method to construct an 85\% CI,  is it wider or narrower than a 95\% CI? 
